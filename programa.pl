@@ -1,25 +1,18 @@
-% padreDe(Padre,Hijo).
-padreDe(granny, buck).
-padreDe(buck, tiara).
-padreDe(grandpa, buck).
-padreDe(clara, fio).
-
-%Caso Recursivo
-ancestro(Ancestro, Cocinerito):-
-	padreDe(CocineroPadre, Cocinerito),
-	ancestro(Ancestro, CocineroPadre).
-
-%Caso Base
-ancestro(Ancestro, Cocinerito):-
-	padreDe(Ancestro, Cocinerito).
-
-%esMasExperto(Experto,Novato)
 % maestroDe(Maestro,Aprendiz).
-maestroDe(granny,grandpa).
+maestroDe(granny, grandpa).
 maestroDe(grandpa, buck).
 maestroDe(buck, clara).
 maestroDe(clara, fio).
 maestroDe(buck, tiara).
+
+%Caso Recursivo
+ancestro(Ancestro, Cocinerito):-
+	maestroDe(Maestro, Cocinerito),
+	ancestro(Ancestro, Maestro).
+
+%Caso Base
+ancestro(Ancestro, Cocinerito):-
+	maestroDe(Ancestro, Cocinerito).
 
 
 gradoDeExperienciaSobre(Experto, Novato, 1):-
@@ -31,28 +24,29 @@ gradoDeExperienciaSobre(Experto, Novato, Grado):-
     Grado is GradoAnterior + 1.
 
 
-% ingrediente(Nombre, Cantidad)
-ingrediente(azucar, 100).
-ingrediente(mayonesa, 20).
-ingrediente(sal, 40).
-ingrediente(carne, 90).
-
-receta(hamburguesa, [ingrediente(carne, 100),ingrediente(lechuga, 40),ingrediente(tomate, 20), ingrediente(pan, 2)]).
-
-receta(ensalada, [ingrediente(lechuga, 90), ingrediente(tomate, 40), ingrediente(queso, 20)]).
-
-receta(chocotorta, [ingrediente(chocolate, 100), ingrediente(azucar, 280)]).
+ancestroV2(Ancestro, Cocinerito):-
+    gradoDeExperienciaSobre(Ancestro, Cocinerito,_).
 
 
-rapida(Nombre):-
+
+receta(hamburguesa, [pan, carne, pan]).
+
+receta(ensalada, [lechuga, tomate, queso, rucula, couscous]).
+
+receta(chocotorta, [chocolinas, queso, dulceDeLeche, chocolinas]).
+
+tiempo().
+
+simple(Nombre):-
     receta(Nombre, Ingredientes),
     length(Ingredientes, Cantidad),
     Cantidad < 4.
     
-postre(Nombre):-
+necesitaPreparacion(Nombre):-
     receta(Nombre, Ingredientes),
-    member(ingrediente(azucar, Cantidad), Ingredientes),
-    Cantidad >= 250.
+    member(Ingrediente, Ingredientes),
+    tiempo(Ingrediente,Tiempo),
+    Tiempo >= 60.
 
 % findall(Selector, Consulta, Lista).
 
@@ -82,3 +76,14 @@ abundante(Ingrediente):-
     Cantidad >= 100.
     
 segundo([_ | [Segundo | _]], Segundo).
+
+
+
+esSanguche(Ingredientes):-
+    first(Ingredientes,pan),
+    last(Ingredientes,pan),
+    length(Ingredientes,3),
+    member(Ingrediente,Ingredientes),
+    ingrediente(Ingrediente).
+
+first([Primero|_], Primero).
